@@ -4,6 +4,7 @@ import com.spring.boot.dto.resquest.UserCreationRequest;
 import com.spring.boot.dto.resquest.UserUpdateRequest;
 import com.spring.boot.entity.User;
 import com.spring.boot.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("")
-    public ResponseEntity<?> createUser(@RequestBody UserCreationRequest request) {
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ResponseEntity.ok(userService.createRequest(request));
     }
 
