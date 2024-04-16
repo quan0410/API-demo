@@ -1,5 +1,6 @@
 package com.spring.boot.service;
 
+import com.spring.boot.dto.response.UserResponse;
 import com.spring.boot.dto.resquest.UserCreationRequest;
 import com.spring.boot.dto.resquest.UserUpdateRequest;
 import com.spring.boot.entity.User;
@@ -7,17 +8,19 @@ import com.spring.boot.exeption.AppException;
 import com.spring.boot.exeption.ErrorCode;
 import com.spring.boot.mapper.UserMapper;
 import com.spring.boot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper  userMapper;
+    UserRepository userRepository;
+    UserMapper userMapper;
 
     public User createRequest(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername()))
@@ -32,18 +35,18 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(String userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+    public UserResponse getUserById(String userId) {
+        return userMapper.toUserResponse(userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User Not Found")));
     }
 
-    public User updateUser(String userId, UserUpdateRequest request) {
-        User user = getUserById(userId);
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDob(request.getDob());
+        userMapper.updateUser(user, request);
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public void deleteUser(String userId) {
