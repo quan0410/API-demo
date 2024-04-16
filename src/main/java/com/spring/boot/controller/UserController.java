@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +28,7 @@ public class UserController {
 
         ApiResponse<User> response = new ApiResponse<>();
 
-        response.setResult(userService.createRequest(request));
+        response.setResult(userService.createUser(request));
 
         return response;
     }
