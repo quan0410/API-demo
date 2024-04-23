@@ -1,5 +1,6 @@
 package com.spring.boot.dto.resquest;
 
+import com.spring.boot.validator.DobConstraint;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +18,7 @@ public class UserUpdateRequest {
     String password;
     String firstName;
     String lastName;
+    @DobConstraint(min = 2, message = "INVALID_DOB")
     LocalDate dob;
     List<String> roles;
 }
