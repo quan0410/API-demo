@@ -8,6 +8,7 @@ import com.spring.boot.enums.Role;
 import com.spring.boot.exeption.AppException;
 import com.spring.boot.exeption.ErrorCode;
 import com.spring.boot.mapper.UserMapper;
+import com.spring.boot.repository.RoleRepository;
 import com.spring.boot.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername()))
@@ -78,6 +80,9 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var role = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(role));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
