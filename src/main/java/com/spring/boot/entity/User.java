@@ -1,14 +1,10 @@
 package com.spring.boot.entity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+ import java.util.Set;
 
 @Data
 @Builder
@@ -26,5 +22,6 @@ public class User {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<String> roles;
+    @ManyToMany
+    Set<Role> roles;
 }
