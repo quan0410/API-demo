@@ -6,6 +6,7 @@ import com.spring.boot.dto.response.IntrospectResponse;
 import com.spring.boot.dto.resquest.ApiResponse;
 import com.spring.boot.dto.resquest.AuthenticationRequest;
 import com.spring.boot.dto.resquest.IntrospectRequest;
+import com.spring.boot.dto.resquest.LogoutRequest;
 import com.spring.boot.service.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,13 @@ public class AuthenticationController {
         var result =  authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder()
                 .build();
     }
 }
