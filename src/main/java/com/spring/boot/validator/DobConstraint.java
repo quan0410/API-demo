@@ -18,6 +18,4 @@ public @interface DobConstraint {
     Class<? extends Payload>[] payload() default {};
 
     int min();
-
-    int max() default Integer.MAX_VALUE;
 }
