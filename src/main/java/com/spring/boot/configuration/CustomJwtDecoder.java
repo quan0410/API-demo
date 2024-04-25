@@ -1,5 +1,6 @@
 package com.spring.boot.configuration;
 
+import com.nimbusds.jose.JOSEException;
 import com.spring.boot.dto.resquest.IntrospectRequest;
 import com.spring.boot.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.text.ParseException;
 import java.util.Objects;
 
 @Component
@@ -34,7 +36,7 @@ public class CustomJwtDecoder implements JwtDecoder {
             if (!response.isValid()) {
                 throw new JwtException("Invalid token");
             }
-        } catch (Exception e) {
+        } catch (JOSEException | ParseException e) {
             throw new JwtException(e.getMessage());
         }
 

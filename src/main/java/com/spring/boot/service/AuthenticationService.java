@@ -10,6 +10,7 @@ import com.spring.boot.dto.response.IntrospectResponse;
 import com.spring.boot.dto.resquest.AuthenticationRequest;
 import com.spring.boot.dto.resquest.IntrospectRequest;
 import com.spring.boot.dto.resquest.LogoutRequest;
+import com.spring.boot.dto.resquest.RefreshRequest;
 import com.spring.boot.entity.InvalidatedToken;
 import com.spring.boot.entity.User;
 import com.spring.boot.exeption.AppException;
@@ -146,5 +147,29 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         return signedJWT;
+    }
+
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+        var signJWT = verifyToken(request.getToken());
+
+        var jit = signJWT.getJWTClaimsSet().getJWTID();
+        var expirationDate = signJWT.getJWTClaimsSet().getExpirationTime();
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiryTime(expirationDate)
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        var userName = signJWT.getJWTClaimsSet().getSubject();
+        var user = userRepository.findByUsername(userName).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXITED)
+        );
+
+        var token = generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
     }
 }
